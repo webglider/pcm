@@ -194,12 +194,14 @@ void store_latency_core(PCM *m)
         // L1 latency
         //Adding 5 clocks for L1 Miss
         core_latency[L1].core[i].latency = ((core_event[FB_OCC_RD].core[i].latency/core_event[FB_INS_RD].core[i].latency)+extra_clocks_for_L1_miss)/frequency;
+	cout << "FB_Occupancy:CORE" << i << ":" << (core_event[FB_OCC_RD].core[i].latency/frequency/1e9) << ",";
         core_latency[L1].core[i].occ_rd = (core_event[FB_OCC_RD].core[i].latency);
         core_latency[L1].core[i].insert_rd = (core_event[FB_INS_RD].core[i].latency);
         const auto s = m->getSocketId(i);
         core_latency[L1].socket[s].occ_rd += (core_latency[L1].core[i].occ_rd + extra_clocks_for_L1_miss * core_latency[L1].core[i].insert_rd) / frequency;
         core_latency[L1].socket[s].insert_rd += core_latency[L1].core[i].insert_rd;
     }
+    cout << "\n";
     for (auto & s : core_latency[L1].socket)
     {
         s.latency = s.occ_rd / s.insert_rd;
