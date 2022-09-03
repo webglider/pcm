@@ -9,11 +9,20 @@ on:
 jobs:
   build:
 
-    runs-on: macos-10.15
+    runs-on: macos-11
 
     steps:
     - uses: actions/checkout@v2
+    - name: install simdjson
+      uses: actions/checkout@v2
+      with:
+        repository: simdjson/simdjson
+        path: src/simdjson    
+    - name: cmake
+      run: |
+        rm -rf ${{ github.workspace }}/build
+        cmake -B ${{ github.workspace }}/build -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}
     - name: make
       run: |
-        cd MacMSRDriver && make kext library && cd ..
-        make install prefix=.
+        cd ${{ github.workspace }}/build
+        sudo make install
